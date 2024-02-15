@@ -2,6 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const cheerio = require('cheerio');
+const fs = require('fs');
+const https = require('https');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +48,29 @@ app.get('/api/proxy', async (req, res) => {
 
     <div style="text-align: center; margin-bottom: 20px;">
       <a href="https://www.realmotor.jp/car_list/All/All/All/"><img src="https://i.imgur.com/AYOFblW.gif" style="max-width: 100%; border-radius: 10px;"></a>
+    </div>
+    
+    <p style="margin: 0; font-size: 24px; font-weight: bold; text-align: center; color: #FFF; background-color: #0066CC;">How to Buy</p>
+    <br/>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+     <a href="https://www.realmotor.jp/howto_02"><img src="https://i.imgur.com/akXAGQ7.png" style="max-width: 100%; border-radius: 10px;"></a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+    <a href="https://www.realmotor.jp/howto_02"><img src="https://i.imgur.com/pA7FTbO.png" style="max-width: 100%; border-radius: 10px;"></a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+    <a href="https://www.realmotor.jp/howto_02"><img src="https://i.imgur.com/oYQJwHp.png" style="max-width: 100%; border-radius: 10px;"></a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+    <a href="https://www.realmotor.jp/howto_02"><img src="https://i.imgur.com/s1GS2Lv.png" style="max-width: 100%; border-radius: 10px;"></a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+    <a href="https://www.realmotor.jp/howto_02"><img src="https://i.imgur.com/B8dAEgl.png" style="max-width: 100%; border-radius: 10px;"></a>
     </div>
 
     <header style="background-color: white; padding: 0px; border-radius: 10px;">
@@ -107,3 +132,4 @@ app.get('/api/proxy', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
