@@ -163,7 +163,7 @@ Real Motor Japan`;
             readBy: ['RMJ-Bot'],
         });
 
-        promises.push(sendEmail(invoice.consignee.email, `Payment Reminder | Due Date | ${today}`, htmlContent));
+        promises.push(sendEmail(invoice.customerEmail, `Payment Reminder | Due Date | ${today}`, htmlContent));
 
         promises.push(addMessagePromise, updateChatPromise);
     });
