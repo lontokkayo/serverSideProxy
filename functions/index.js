@@ -37,8 +37,9 @@ const sendEmail = async (to, subject, htmlContent) => {
 //     .onRun(async context => {
 // exports.sendDueDateRemindersAndAddMessage = functions.region('asia-northeast2').pubsub.schedule('every 24 hours').timeZone('Asia/Tokyo').onRun(async () => {
 // exports.sendDueDateRemindersAndAddMessage = functions.region('asia-northeast2').pubsub.schedule('every 1 minutes').timeZone('Asia/Tokyo').onRun(async () => {
-exports.sendDueDateRemindersAndAddMessage = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
-
+exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
+    const promisesForPaymentReminder = [];
+    const promisesForOrderItemReminder = [];
     // Get today's date in the format YYYY-MM-DD
     const firestoreTimestamp = admin.firestore.Timestamp.now();
     const firestoreDate = firestoreTimestamp.toDate();
@@ -51,19 +52,19 @@ exports.sendDueDateRemindersAndAddMessage = functions.region('asia-northeast2').
     const issuedInvoicesRef = admin.firestore().collection('IssuedInvoice');
 
     // Query for documents with a dueDate of today or later, and isCancelled is false (uncomment and use as needed)
-    const snapshot = await issuedInvoicesRef
+    const snapshotForPaymentReminder = await issuedInvoicesRef
         .where('bankInformations.dueDate', '<=', today)
         .where('isCancelled', '==', false)
+        .where('orderPlaced', '==', true)
         .get();
 
 
-    if (snapshot.empty) {
+    if (snapshotForPaymentReminder.empty) {
         console.log('No matching documents for due date reminders.');
         return null;
     }
 
-    const promises = [];
-    snapshot.forEach(doc => {
+    snapshotForPaymentReminder.forEach(doc => {
         const invoice = doc.data();
         // Retrieve the chatId from the document
         const chatId = invoice.chatId; // Assuming chatId is directly under the document
@@ -163,14 +164,136 @@ Real Motor Japan`;
             readBy: ['RMJ-Bot'],
         });
 
-        promises.push(sendEmail(invoice.customerEmail, `Payment Reminder | Due Date | ${today}`, htmlContent));
+        promisesForPaymentReminder.push(sendEmail(invoice.customerEmail, `Payment Reminder | Due Date | ${today}`, htmlContent));
 
-        promises.push(addMessagePromise, updateChatPromise);
+        promisesForPaymentReminder.push(addMessagePromise, updateChatPromise);
     });
 
+    // Query for documents with a dueDate of today or later, and isCancelled is false (uncomment and use as needed)
+    const snapshotForOrderItemReminder = await issuedInvoicesRef
+        .where('bankInformations.dueDate', '>=', today)
+        .where('isCancelled', '==', false)
+        .where('orderPlaced', '==', false)
+        .get();
+
+
+    if (snapshotForOrderItemReminder.empty) {
+        console.log('No matching documents for order item reminders.');
+        return null;
+    }
+
+    snapshotForOrderItemReminder.forEach(doc => {
+        const invoice = doc.data();
+        // Retrieve the chatId from the document
+        const chatId = invoice.chatId; // Assuming chatId is directly under the document
+        if (!chatId) {
+            console.log(`No chatId found for invoice ID: ${doc.id}`);
+            return;
+        }
+
+        const htmlContent = `<html class="focus-outline-visible">
+        <head>
+        <title>Place Order Reminder</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f4f4f4;
+                color: #333;
+                padding: 10px;
+                margin: 0;
+            }
+            .container {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin: 20px auto;
+                max-width: 600px;
+                padding: 20px;
+            }
+            h2, .highlight {
+                color: #FF0000; /* Red */
+            }
+            p {
+                font-size: 16px;
+                line-height: 1.6;
+                margin: 10px 0 20px;
+            }
+            .signature {
+                font-weight: bold;
+                margin-top: 40px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Place Order Reminder</h2>
+
+            <p><strong>Dear Valued Customer,</strong></p>
+
+            <p>I hope this message finds you well.</p>
+
+            <p>It seems you still have a pending <strong><span class="highlight">Proforma Invoice</span></strong> on us.</p>
+            
+            <p>This is a gentle reminder to place an order for <strong>2010 NISSAN TIIDA</strong> see bank details in your invoice</p>
+            
+            <p>Should you require any assistance or have questions, please do not hesitate to contact us.</p>
+            
+            <p>Thank you for your prompt attention to this matter.</p>
+            
+            <p class="signature">Best regards,<br>Real Motor Japan</p>
+        </div>
+    
+    
+    </body>
+    </html>`;
+
+        const messageText = `Dear Valued Customer,
+
+I hope this message finds you well.
+
+It seems you still have a pending Proforma Invoice on us.
+
+This is a gentle reminder to place an order for 2010 NISSAN TIIDA see bank details in your invoice.
+
+Should you require any assistance or have questions, please do not hesitate to contact us.
+
+Thank you for your prompt attention to this matter.
+
+Best regards,
+Real Motor Japan`;
+
+        // Construct the message to add to the 'messages' subcollection for the specific chat
+        const addMessagePromise = admin.firestore().collection('chats').doc(chatId).collection('messages').add({
+            text: messageText,
+            sender: 'RMJ-Bot', // Adjust as per your sender identification strategy
+            timestamp: formattedTime,
+        });
+
+        // Update the main chat document with the latest message details
+        const updateChatPromise = admin.firestore().collection('chats').doc(chatId).update({
+            lastMessageSender: 'RMJ-Bot',
+            lastMessage: messageText,
+            lastMessageDate: formattedTime,
+            customerRead: false,
+            // read: true,
+            readBy: ['RMJ-Bot'],
+        });
+
+        promisesForOrderItemReminder.push(sendEmail(invoice.customerEmail, `Place Order Reminder | ${today}`, htmlContent));
+
+        promisesForOrderItemReminder.push(addMessagePromise, updateChatPromise);
+    });
+
+
     // Wait for all the promises to resolve
-    await Promise.all(promises).catch(error => console.error('Error processing invoices:', error));
+    await Promise.all(promisesForOrderItemReminder).catch(error => console.error('Error processing invoices:', error));
+    await Promise.all(promisesForPaymentReminder).catch(error => console.error('Error processing invoices:', error));
     console.log('Due date reminders and messages sent for non-cancelled invoices.');
 
     return null;
+
+
+
 });
+
