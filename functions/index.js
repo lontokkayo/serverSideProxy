@@ -6,6 +6,8 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 
 admin.initializeApp();
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 
 const sendEmail = async (to, subject, htmlContent) => {
     try {
@@ -64,7 +66,7 @@ exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.s
         return null;
     }
 
-    snapshotForPaymentReminder.forEach(doc => {
+    snapshotForPaymentReminder.forEach(async doc => {
         const invoice = doc.data();
         // Retrieve the chatId from the document
         const chatId = invoice.chatId; // Assuming chatId is directly under the document
@@ -119,7 +121,7 @@ exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.s
             
             <p>Please be aware that failure to meet the payment deadline may lead to cancellation of the transaction, which we hope to avoid.</p>
             
-            <p>Should you require any assistance or have questions, please do not hesitate to contact us.</p>
+            <p>Please do not hesitate to contact us if you require any assistance or have questions.</p>
             
             <p>Thank you for your prompt attention to this matter.</p>
             
@@ -140,8 +142,8 @@ We kindly request you to submit your payment proof at your earliest convenience 
         
 Please be aware that failure to meet the payment deadline may lead to cancellation of the transaction, which we hope to avoid.
         
-Should you require any assistance or have questions, please do not hesitate to contact us.
-        
+Please do not hesitate to contact us if you require any assistance or have questions.
+
 Thank you for your prompt attention to this matter.
         
 Best regards,
@@ -163,7 +165,8 @@ Real Motor Japan`;
             // read: true,
             readBy: ['RMJ-Bot'],
         });
-
+        
+        await delay(500);
         promisesForPaymentReminder.push(sendEmail(invoice.customerEmail, `Payment Reminder | Due Date | ${today}`, htmlContent));
 
         promisesForPaymentReminder.push(addMessagePromise, updateChatPromise);
@@ -182,7 +185,7 @@ Real Motor Japan`;
         return null;
     }
 
-    snapshotForOrderItemReminder.forEach(doc => {
+    snapshotForOrderItemReminder.forEach(async doc => {
         const invoice = doc.data();
         // Retrieve the chatId from the document
         const chatId = invoice.chatId; // Assuming chatId is directly under the document
@@ -235,9 +238,9 @@ Real Motor Japan`;
 
             <p>It seems you still have a pending <strong><span class="highlight">Proforma Invoice</span></strong> on us.</p>
             
-            <p>This is a gentle reminder to place an order for <strong>2010 NISSAN TIIDA</strong> see bank details in your invoice</p>
+            <p>This is a gentle reminder to place an order for vehicle <strong>${invoice.carData.carName}</strong> with the chassis number <strong>${invoice.carData.chassisNumber}</strong> to see bank details in your invoice</p>
             
-            <p>Should you require any assistance or have questions, please do not hesitate to contact us.</p>
+            <p>Please do not hesitate to contact us if you require any assistance or have questions.</p>
             
             <p>Thank you for your prompt attention to this matter.</p>
             
@@ -254,9 +257,9 @@ I hope this message finds you well.
 
 It seems you still have a pending Proforma Invoice on us.
 
-This is a gentle reminder to place an order for 2010 NISSAN TIIDA see bank details in your invoice.
+This is a gentle reminder to place an order for vehicle ${invoice.carData.carName} with the chassis number ${invoice.carData.chassisNumber} to see bank details in your invoice.
 
-Should you require any assistance or have questions, please do not hesitate to contact us.
+Please do not hesitate to contact us if you require any assistance or have questions.
 
 Thank you for your prompt attention to this matter.
 
@@ -279,7 +282,7 @@ Real Motor Japan`;
             // read: true,
             readBy: ['RMJ-Bot'],
         });
-
+        await delay(500);
         promisesForOrderItemReminder.push(sendEmail(invoice.customerEmail, `Place Order Reminder | ${today}`, htmlContent));
 
         promisesForOrderItemReminder.push(addMessagePromise, updateChatPromise);
@@ -287,6 +290,7 @@ Real Motor Japan`;
 
 
     // Wait for all the promises to resolve
+
     await Promise.all(promisesForOrderItemReminder).catch(error => console.error('Error processing invoices:', error));
     await Promise.all(promisesForPaymentReminder).catch(error => console.error('Error processing invoices:', error));
     console.log('Due date reminders and messages sent for non-cancelled invoices.');
