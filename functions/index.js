@@ -11,7 +11,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const sendEmail = async (to, subject, htmlContent) => {
     try {
-        const response = await fetch('https://rmjsmtp.duckdns.org/emailServer/send-email', {
+        const response = await fetch('http://rmjsmtp.duckdns.org:2000/send-email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ Real Motor Japan`;
             // read: true,
             readBy: ['RMJ-Bot'],
         });
-        
+
         await delay(500);
         promisesForPaymentReminder.push(sendEmail(invoice.customerEmail, `Payment Reminder | Due Date | ${today}`, htmlContent));
 
