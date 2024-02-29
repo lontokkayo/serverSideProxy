@@ -22,6 +22,7 @@ const transporter = nodemailer.createTransport({
 async function sendMail(to, subject, htmlContent) {
     const mailOptions = {
         from: `"Real Motor Japan" <${process.env.EMAIL_ADDRESS}>`, // Sender name and email
+        replyTo: "info@realmotor.jp",
         to: to,
         subject: subject,
         html: htmlContent,

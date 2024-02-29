@@ -132,7 +132,9 @@ exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.s
     </body>
     </html>`;
 
-        const messageText = `Dear Valued Customer,
+        const messageText = `Payment Reminder
+
+Dear Valued Customer,
 
 I hope this message finds you well.
         
@@ -251,7 +253,9 @@ Real Motor Japan`;
     </body>
     </html>`;
 
-        const messageText = `Dear Valued Customer,
+        const messageText = `Place Order Reminder
+
+Dear Valued Customer,
 
 I hope this message finds you well.
 

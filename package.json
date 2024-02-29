@@ -14,9 +14,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "express-http-proxy": "^2.0.0",
     "googleapis": "^133.0.0",
+    "http-proxy-middleware": "^2.0.6",
     "jsdom": "^24.0.0",
-    "moment-timezone": "^0.5.45"
+    "moment-timezone": "^0.5.45",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
