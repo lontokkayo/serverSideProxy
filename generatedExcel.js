@@ -91,11 +91,11 @@ app.post('/generate-excel', upload.none(), async (req, res) => {
     worksheet.getCell('D22').value = transmission;
     worksheet.getCell('D23').value = notes;
 
-    const customFileName = `Invoice No. ${req.body.invoiceNumber} Excel.xlsm`; // Construct the filename with the invoice number
+    const customFileName = `Invoice No. ${req.body.invoiceNumber} Excel.xlsx`; // Construct the filename with the invoice number
 
     // Prepare the response
-    res.setHeader('Content-Type', 'application/vnd.ms-excel.sheet.macroEnabled.12');
-    res.setHeader('Content-Disposition', `attachment; filename="${encodeURI(customFileName)}"`); // Encode the filename to ensure it's valid for HTTP headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${customFileName}"`);
     await workbook.xlsx.write(res);
     res.end();
 });
