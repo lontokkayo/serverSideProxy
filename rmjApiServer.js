@@ -25,7 +25,7 @@ app.use(cors({
 // Initialize Firebase Admin
 
 
-// Middleware
+// // Middleware
 app.use(bodyParser.json());
 
 
@@ -53,52 +53,65 @@ const validateCredentials = async (req, res, next) => {
     }
 };
 
-// Routes
-app.post('/addVehicleData', validateCredentials, async (req, res) => {
-    const { documentData, documentId } = req.body; // Extract documentData from request body
-    try {
-        // Use documentId as the Firestore document ID
-        await db.collection('vehicleCollection').doc(`${documentId}`).set(documentData);
-        res.status(200).send({ message: 'Document added successfully', id: documentId });
-    } catch (error) {
-        res.status(500).send({ message: 'Error adding document', error: error.message });
-    }
+// // Routes
+// app.post('/addVehicleData', validateCredentials, async (req, res) => {
+//     const { documentData, documentId } = req.body; // Extract documentData from request body
+//     try {
+//         // Use documentId as the Firestore document ID
+//         await db.collection('vehicleCollection').doc(`${documentId}`).set(documentData);
+//         res.status(200).send({ message: 'Document added successfully', id: documentId });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Error adding document', error: error.message });
+//     }
+// });
+
+// app.post('/updateVehicleData', validateCredentials, async (req, res) => {
+//     const { documentData, documentId } = req.body;
+//     try {
+//         // Use the 'set' method with 'merge' set to true to update the document
+//         await db.collection('vehicleCollection').doc(`${documentId}`).set(documentData, { merge: true });
+//         res.status(200).send({ message: 'Document updated successfully' });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Error updating document', error: error.message });
+//     }
+// });
+
+// app.post('/addCustomerData', validateCredentials, async (req, res) => {
+//     const { documentData, documentId } = req.body; // Extract documentData from request body
+//     try {
+//         // Use documentId as the Firestore document ID
+//         await db.collection('customerCollection').doc(`${documentId}`).set(documentData);
+//         res.status(200).send({ message: 'Document added successfully', id: documentId });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Error adding document', error: error.message });
+//     }
+// });
+
+// app.post('/updateCustomerData', validateCredentials, async (req, res) => {
+//     const { documentData, documentId } = req.body;
+//     try {
+//         // Use the 'set' method with 'merge' set to true to update the document
+//         await db.collection('customerCollection').doc(`${documentId}`).set(documentData, { merge: true });
+//         res.status(200).send({ message: 'Document updated successfully' });
+//     } catch (error) {
+//         res.status(500).send({ message: 'Error updating document', error: error.message });
+//     }
+// });
+
+// // Start the server
+// app.listen(port, () => {
+//     console.log(`Server running on http://localhost:${port}`);
+// });
+
+const net = require('net');
+const client = new net.Socket();
+const address = '153.122.121.214';
+
+client.connect(port, address, () => {
+    console.log('Connected to server!');
+    client.end(); // Close the connection when done
 });
 
-app.post('/updateVehicleData', validateCredentials, async (req, res) => {
-    const { documentData, documentId } = req.body;
-    try {
-        // Use the 'set' method with 'merge' set to true to update the document
-        await db.collection('vehicleCollection').doc(`${documentId}`).set(documentData, { merge: true });
-        res.status(200).send({ message: 'Document updated successfully' });
-    } catch (error) {
-        res.status(500).send({ message: 'Error updating document', error: error.message });
-    }
-});
-
-app.post('/addCustomerData', validateCredentials, async (req, res) => {
-    const { documentData, documentId } = req.body; // Extract documentData from request body
-    try {
-        // Use documentId as the Firestore document ID
-        await db.collection('customerCollection').doc(`${documentId}`).set(documentData);
-        res.status(200).send({ message: 'Document added successfully', id: documentId });
-    } catch (error) {
-        res.status(500).send({ message: 'Error adding document', error: error.message });
-    }
-});
-
-app.post('/updateCustomerData', validateCredentials, async (req, res) => {
-    const { documentData, documentId } = req.body;
-    try {
-        // Use the 'set' method with 'merge' set to true to update the document
-        await db.collection('customerCollection').doc(`${documentId}`).set(documentData, { merge: true });
-        res.status(200).send({ message: 'Document updated successfully' });
-    } catch (error) {
-        res.status(500).send({ message: 'Error updating document', error: error.message });
-    }
-});
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+client.on('error', (error) => {
+    console.error('Connection error: ' + error.message);
 });
