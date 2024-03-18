@@ -25,7 +25,7 @@ app.use(cors({
 // Initialize Firebase Admin
 
 
-// // Middleware
+// Middleware
 app.use(bodyParser.json());
 
 
@@ -102,16 +102,3 @@ app.post('/updateCustomerData', validateCredentials, async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-
-// const net = require('net');
-// const client = new net.Socket();
-// const address = '153.122.121.214';
-
-// client.connect(port, address, () => {
-//     console.log('Connected to server!');
-//     client.end(); // Close the connection when done
-// });
-
-// client.on('error', (error) => {
-//     console.error('Connection error: ' + error.message);
-// });
