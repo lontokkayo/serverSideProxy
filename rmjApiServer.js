@@ -106,11 +106,6 @@ app.use(bodyParser.json());
 
 
 // Initialize Firebase Admin with service account
-const serviceAccount = require('./samplermj-testreceiver-firebase-adminsdk-ytong-09460be72c.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
 // Use raw parser for all bodies, regardless of content type
 app.use(bodyParser.raw({ type: '*/*' }));
