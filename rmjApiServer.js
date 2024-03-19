@@ -110,7 +110,7 @@ app.use(cors({
 // Initialize Firebase Admin with service account
 app.use(bodyParser.json({
   verify: (req, res, buf) => {
-      req.rawBody = buf;
+    req.rawBody = buf;
   }
 }));
 
@@ -124,34 +124,36 @@ app.post('/', async (req, res) => {
       throw new Error("Missing 'action_cd' or 'stock_id' in JSON data");
     }
 
-    // Reference to the document in Firestore
+    let resultMessage;
     const docRef = db.collection('vehicleData').doc(jsonData.stock_no);
 
-    // Check the action_cd and perform the corresponding Firestore operation
     switch (jsonData.action_cd) {
       case 'insert':
-        // Add the document with stock_id as ID (will fail if document already exists)
         await docRef.create(jsonData);
-        res.status(200).send(`Document inserted with ID: ${jsonData.stock_no}`);
+        resultMessage = `Document inserted with ID: ${jsonData.stock_no}`;
         break;
       case 'update':
-        // Update the document with stock_id as ID, merge with existing data
         await docRef.set(jsonData, { merge: true });
-        res.status(200).send(`Document updated with ID: ${jsonData.stock_no}`);
+        resultMessage = `Document updated with ID: ${jsonData.stock_no}`;
         break;
       case 'delete':
-        // Delete the document with stock_id as ID
         await docRef.delete();
-        res.status(200).send(`Document deleted with ID: ${jsonData.stock_no}`);
+        resultMessage = `Document deleted with ID: ${jsonData.stock_no}`;
         break;
       default:
-        // Handle unknown action_cd
         throw new Error(`Invalid 'action_cd' value: ${jsonData.action_cd}`);
     }
 
+    // For JSONP, normally you should get a callback query parameter to wrap your response
+    // This example just hardcodes a fictional callback name for demonstration
+    const callback = req.query.callback || 'callback'; // In real-case scenarios, get the callback name from request
+    res.jsonp({ [callback]: JSON.stringify({ result: resultMessage }) }); // Use Express's res.jsonp() for proper JSONP support
+
   } catch (error) {
     console.error('Error processing request:', error);
-    res.status(500).send('Error processing request: ' + error.message);
+    const callback = req.query.callback || 'callback';
+    res.type('text/javascript');
+    res.send(`${callback}(${JSON.stringify({ error: error.message })});`);
   }
 });
 
