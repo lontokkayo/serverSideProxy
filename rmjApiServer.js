@@ -26,7 +26,9 @@ app.use(cors({
 
 
 // Middleware
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+
+
 
 
 // const validateCredentials = async (req, res, next) => {
@@ -106,39 +108,49 @@ app.use(bodyParser.json());
 
 
 // Initialize Firebase Admin with service account
-
-// Use raw parser for all bodies, regardless of content type
-app.use(bodyParser.raw({ type: '*/*' }));
+app.use(bodyParser.json());
 
 app.post('/', async (req, res) => {
   try {
-    // Convert the raw buffer to a string
-    const rawString = req.body.toString();
+    // Here req.body is already a JavaScript object parsed from JSON input
+    const jsonData = req.body;
 
-    // Attempt to manually correct the JSON formatting
-    const correctedString = rawString
-      // Add quotes around keys
-      .replace(/([,{])(\s*)([A-Za-z0-9_]+)(\s*):/g, '$1"$3":')
-      // Turn stringified arrays into real arrays
-      .replace(/"\[(.*?)\]"/g, (match, p1) => `[${p1}]`);
-
-    let data;
-    try {
-      data = JSON.parse(correctedString);
-    } catch (error) {
-      // If JSON is still not well-formed, send an error
-      return res.status(400).send('Badly formatted JSON');
+    // Ensure jsonData contains necessary fields
+    if (!jsonData.action_cd || !jsonData.stock_no) {
+      throw new Error("Missing 'action_cd' or 'stock_id' in JSON data");
     }
 
-    const docRef = await db.collection('vehicleCollection').add(data);
-    res.status(200).send(`Document added with ID: ${docRef.id}`);
+    // Reference to the document in Firestore
+    const docRef = db.collection('vehicleData').doc(jsonData.stock_no);
+
+    // Check the action_cd and perform the corresponding Firestore operation
+    switch (jsonData.action_cd) {
+      case 'insert':
+        // Add the document with stock_id as ID (will fail if document already exists)
+        await docRef.create(jsonData);
+        res.status(200).send(`Document inserted with ID: ${jsonData.stock_no}`);
+        break;
+      case 'update':
+        // Update the document with stock_id as ID, merge with existing data
+        await docRef.set(jsonData, { merge: true });
+        res.status(200).send(`Document updated with ID: ${jsonData.stock_no}`);
+        break;
+      case 'delete':
+        // Delete the document with stock_id as ID
+        await docRef.delete();
+        res.status(200).send(`Document deleted with ID: ${jsonData.stock_no}`);
+        break;
+      default:
+        // Handle unknown action_cd
+        throw new Error(`Invalid 'action_cd' value: ${jsonData.action_cd}`);
+    }
+
   } catch (error) {
-    console.error('Error adding document: ', error);
-    res.status(500).send('Error adding document: ' + error.message);
+    console.error('Error processing request:', error);
+    res.status(500).send('Error processing request: ' + error.message);
   }
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
