@@ -108,20 +108,41 @@ app.use(cors({
 
 
 // Initialize Firebase Admin with service account
+app.use((req, res, next) => {
+  // Only try to parse JSON for POST requests
+  if (req.method === 'POST') {
+    let data = '';
+    req.on('data', chunk => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(data); // Attempt to parse the incoming string as JSON
+      } catch (e) {
+        // If error, don't automatically fail, just log it and set body to undefined
+        console.error('Could not parse JSON:', e);
+        req.body = undefined;
+      }
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
+// Use bodyParser.json() after your custom middleware
 app.use(bodyParser.json({
   verify: (req, res, buf) => {
     req.rawBody = buf;
   }
 }));
-
 app.post('/', async (req, res) => {
+  let jsonData = {}; // Initialize jsonData outside try block to access it later
   try {
-    // Here req.body is already a JavaScript object parsed from JSON input
-    const jsonData = req.body;
+    jsonData = req.body; // Directly use req.body for JSON input
 
-    // Ensure jsonData contains necessary fields
     if (!jsonData.action_cd || !jsonData.stock_no) {
-      throw new Error("Missing 'action_cd' or 'stock_id' in JSON data");
+      throw new Error("Missing 'action_cd' or 'stock_no' in JSON data");
     }
 
     let resultMessage;
@@ -144,16 +165,15 @@ app.post('/', async (req, res) => {
         throw new Error(`Invalid 'action_cd' value: ${jsonData.action_cd}`);
     }
 
-    // For JSONP, normally you should get a callback query parameter to wrap your response
-    // This example just hardcodes a fictional callback name for demonstration
-    const callback = req.query.callback || 'callback'; // In real-case scenarios, get the callback name from request
-    res.jsonp({ [callback]: JSON.stringify({ result: resultMessage }) }); // Use Express's res.jsonp() for proper JSONP support
+    res.json({ result: resultMessage }); // Send back a standard JSON response
 
   } catch (error) {
     console.error('Error processing request:', error);
-    const callback = req.query.callback || 'callback';
-    res.type('text/javascript');
-    res.send(`${callback}(${JSON.stringify({ error: error.message })});`);
+    // Include jsonData in the error response
+    res.status(500).json({
+      error: error.message,
+      requestData: jsonData // Send back the request data for debugging
+    });
   }
 });
 
