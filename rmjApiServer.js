@@ -107,44 +107,50 @@ app.use(cors({
 
 
 
-// Initialize Firebase Admin with service account
-app.use((req, res, next) => {
-  // Only try to parse JSON for POST requests
-  if (req.method === 'POST') {
-    let data = '';
-    req.on('data', chunk => {
-      data += chunk;
-    });
-    req.on('end', () => {
-      try {
-        req.body = JSON.parse(data); // Attempt to parse the incoming string as JSON
-      } catch (e) {
-        // If error, don't automatically fail, just log it and set body to undefined
-        console.error('Could not parse JSON:', e);
-        req.body = undefined;
-      }
-      next();
-    });
-  } else {
-    next();
-  }
-});
 
-// Use bodyParser.json() after your custom middleware
-app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  }
-}));
+// app.use((req, res, next) => {
+//   if (req.method === 'POST') {
+//       let data = '';
+//       req.on('data', chunk => {
+//           data += chunk;
+//       });
+//       req.on('end', () => {
+//           try {
+//               req.body = JSON.parse(data);
+//           } catch (e) {
+//               console.error('Could not parse JSON:', e);
+//               req.body = data; // Even if it's not JSON, pass the data along for further inspection
+//           }
+//           next();
+//       });
+//   } else {
+//       next();
+//   }
+// });
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.post('/', async (req, res) => {
   let jsonData = {}; // Initialize jsonData outside try block to access it later
   try {
-    jsonData = req.body; // Directly use req.body for JSON input
+    if (typeof req.body === 'object' && Object.keys(req.body).length === 1 && Object.keys(req.body)[0].trim().charAt(0) === '{') {
+      // Try to correctly parse the misinterpreted JSON string
+      const potentialJson = Object.keys(req.body)[0];
+      try {
+        jsonData = JSON.parse(potentialJson);
+      } catch (parseError) {
+        console.error('Could not parse malformed JSON:', parseError);
+        throw new Error('Received malformed JSON data');
+      }
+    } else {
+      jsonData = req.body; // Use the body directly if it's already an object
+    }
 
     if (!jsonData.action_cd || !jsonData.stock_no) {
       throw new Error("Missing 'action_cd' or 'stock_no' in JSON data");
     }
-
     let resultMessage;
     const docRef = db.collection('vehicleData').doc(jsonData.stock_no);
 
