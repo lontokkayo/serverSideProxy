@@ -129,28 +129,19 @@ app.use(cors({
 // });
 
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/', async (req, res) => {
-  let jsonData = {}; // Initialize jsonData outside try block to access it later
+app.get('/', async (req, res) => {
+  // JSONP requests use query parameters, not the request body
+  let jsonData = req.query;
+
+  // No need to parse jsonData from a string; it's already an object thanks to Express parsing query parameters
   try {
-    if (typeof req.body === 'object' && Object.keys(req.body).length === 1 && Object.keys(req.body)[0].trim().charAt(0) === '{') {
-      // Try to correctly parse the misinterpreted JSON string
-      const potentialJson = Object.keys(req.body)[0];
-      try {
-        jsonData = JSON.parse(potentialJson);
-      } catch (parseError) {
-        console.error('Could not parse malformed JSON:', parseError);
-        throw new Error('Received malformed JSON data');
-      }
-    } else {
-      jsonData = req.body; // Use the body directly if it's already an object
+    // Your actual business logic here
+    if (!jsonData.action_cd || !jsonData.stock_no) {
+      throw new Error("Missing 'action_cd' or 'stock_no' in query data");
     }
 
-    if (!jsonData.action_cd || !jsonData.stock_no) {
-      throw new Error("Missing 'action_cd' or 'stock_no' in JSON data");
-    }
     let resultMessage;
     const docRef = db.collection('vehicleData').doc(jsonData.stock_no);
 
@@ -171,15 +162,29 @@ app.post('/', async (req, res) => {
         throw new Error(`Invalid 'action_cd' value: ${jsonData.action_cd}`);
     }
 
-    res.json({ result: resultMessage }); // Send back a standard JSON response
+    // JSONP response requires wrapping the response in a callback function
+    const callback = req.query.callback; // Or 'jsonp' or whatever your client sends
+    if (callback) {
+      res.type('text/javascript');
+      res.send(`${callback}(${JSON.stringify({ result: resultMessage })})`);
+    } else {
+      // Fallback for non-JSONP requests, though typical for GET, it's less common
+      res.json({ result: resultMessage });
+    }
 
   } catch (error) {
     console.error('Error processing request:', error);
-    // Include jsonData in the error response
-    res.status(500).json({
-      error: error.message,
-      requestData: jsonData // Send back the request data for debugging
-    });
+    // Normally JSONP errors are also sent back wrapped in the callback
+    const callback = req.query.callback;
+    if (callback) {
+      res.type('text/javascript');
+      res.send(`${callback}(${JSON.stringify({ error: error.message, requestData: jsonData })})`);
+    } else {
+      res.status(500).json({
+        error: error.message,
+        requestData: jsonData
+      });
+    }
   }
 });
 
