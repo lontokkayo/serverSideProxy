@@ -20,22 +20,19 @@ const db = admin.firestore();
 const app = express();
 const port = 7000;
 
-const allowedOrigins = ['http://153.122.121.214', 'http://153.122.122.149'];
-
 const corsOptions = {
   allowedHeaders: ['Content-Type', 'username', 'accessKey'],
   origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true); // Allow the origin in the request
+    const allowedOrigins = ['http://153.122.121.214', 'http://153.122.122.149'];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true); // Origin is allowed
     } else {
-      callback(new Error('Not allowed by CORS')); // Block the request
+      callback(new Error('Not allowed by CORS')); // Origin is not allowed
     }
   }
 };
 
-// Apply CORS with the options
 app.use(cors(corsOptions));
-
 // Initialize Firebase Admin
 
 // Middleware
