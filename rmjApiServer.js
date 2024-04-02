@@ -2987,6 +2987,21 @@ async function formatVehicleData(jsonData) {
     ...categorizedOptions,
     updatedDate: currentDateInfo.updatedDate, // Correctly include the updatedDate
     dateAdded: currentDateInfo.dateAdded, // And dateAdded
+    keywords: [
+      jsonData.stock_id,
+      makerName.toUpperCase(),
+      modelName.toUpperCase(),
+      bodyTypeName,
+      `${regYear} ${makerName.toUpperCase()} ${modelName.toUpperCase()}`,
+      `${regYear}`,
+      `${regYear} ${makerName.toUpperCase()}`,
+      `${makerName.toUpperCase()} ${modelName.toUpperCase()}`,
+      referenceNumber,
+      lastNumber,
+      buyerName,
+      chassisNumber,
+      stockID,
+    ]
   };
 
   // Additional fields (e.g., chassisNumber, dimensions) are assumed to be direct mappings and do not require transformation.
