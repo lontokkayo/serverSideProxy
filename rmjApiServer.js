@@ -2926,6 +2926,7 @@ async function formatVehicleData(jsonData) {
   const formattedData = {
     // ...jsonData, // Original data
     options_cds, // Transformed options
+    jackall_id: jsonData.stock_id,
     make: makerName.toUpperCase(), // Assuming variables like makerName are defined elsewhere in your code
     model: modelName.toUpperCase(),
     bodyType: bodyTypeName,
