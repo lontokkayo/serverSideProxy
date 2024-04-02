@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const cors = require('cors');
 const axios = require('axios');
-const moment = require('moment');
-
+// const moment = require('moment');
+const moment = require('moment-timezone');
 // Path to your Firebase service account file
 // const serviceAccountPath = './samplermj-testreceiver-firebase-adminsdk-ytong-09460be72c.json';
 const serviceAccountPath = './samplermj-firebase-adminsdk-43mxb-3723a82c00.json';
@@ -2741,16 +2741,30 @@ async function prepareCurrentDate() {
   }
 }
 
+// async function fetchCurrentDate() {
+//   try {
+//     const response = await axios.get('https://worldtimeapi.org/api/timezone/Asia/Tokyo');
+//     const { datetime } = response.data;
+//     const formattedTime = moment(datetime).format('YYYY/MM/DD [at] HH:mm:ss');
+//     console.log(formattedTime); // For demonstration
+//     return formattedTime;
+//   } catch (error) {
+//     console.error('Error fetching or formatting the time:', error);
+//     throw error; // Rethrow or handle error as needed
+//   }
+// }
+
 async function fetchCurrentDate() {
   try {
-    const response = await axios.get('https://worldtimeapi.org/api/timezone/Asia/Tokyo');
-    const { datetime } = response.data;
-    const formattedTime = moment(datetime).format('YYYY/MM/DD [at] HH:mm:ss');
+    const response = await axios.get('https://worldtimeapi.org/api/timezone/UTC'); // Fetch UTC time
+    const utcDatetime = response.data.datetime;
+    // Convert to Asia/Tokyo time zone or any other time zone you're interested in
+    const formattedTime = moment(utcDatetime).tz('Asia/Tokyo').format('YYYY/MM/DD [at] HH:mm:ss');
     console.log(formattedTime); // For demonstration
     return formattedTime;
   } catch (error) {
     console.error('Error fetching or formatting the time:', error);
-    throw error; // Rethrow or handle error as needed
+    throw error;
   }
 }
 
