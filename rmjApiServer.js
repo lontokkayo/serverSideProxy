@@ -2944,7 +2944,7 @@ async function formatVehicleData(jsonData) {
     make: makerName.toUpperCase(), // Assuming variables like makerName are defined elsewhere in your code
     model: modelName.toUpperCase(),
     bodyType: bodyTypeName,
-    carName: `${regYear} ${makerName} ${modelName}`,
+    carName: `${regYear} ${makerName.toUpperCase()} ${modelName.toUpperCase()}`,
     referenceNumber: referenceNumber,
     buyerID: lastNumber,
     buyer: buyerName,
