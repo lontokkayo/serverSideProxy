@@ -6,7 +6,12 @@ const cheerio = require('cheerio');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://lontokkayo.github.io', // Allow only this origin to make requests
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 // Proxy endpoint
 app.get('/api/proxy', async (req, res) => {

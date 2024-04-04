@@ -8,7 +8,12 @@ const app = express();
 const port = 2000;
 
 app.use(bodyParser.json());
-app.use(cors());
+const corsOptions = {
+    origin: 'https://lontokkayo.github.io', // Allow only this origin to make requests
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 // Replace the OAuth2 client setup with SMTP setup using App Password
 const transporter = nodemailer.createTransport({
