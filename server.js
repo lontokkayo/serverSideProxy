@@ -1,3 +1,6 @@
+/* The above code is a Node.js application using Express to create a server that acts as a proxy. It
+listens on a specified port (either the environment port or 3000) and has a single endpoint
+`/api/proxy` that accepts GET requests. */
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
