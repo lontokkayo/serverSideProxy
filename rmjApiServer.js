@@ -2982,6 +2982,7 @@ async function formatVehicleData(jsonData) {
     salesID: salesID,
     steering: steering,
     stockID: stockID,
+    stockStatus: "On-Sale",
     transmission: transmission,
     ...fieldTitlesForVehicle, // Spread the fieldTitles into the vehicle object
     ...categorizedOptions,
