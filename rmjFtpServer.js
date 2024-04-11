@@ -4,14 +4,14 @@ const bodyParser = require('body-parser');
 const { createObjectCsvWriter } = require('csv-writer');
 const path = require('path');
 const fs = require('fs');
-
+// require('dotenv').config();
 // FTP Server Setup
 const ftpHostname = '0.0.0.0';
 const ftpPort = 7001;
 const ftpRoot = path.join(__dirname, 'ftpFolder');
 
 // HTTP Server Setup
-const httpPort = 3000; // HTTP server port
+const httpPort = 7002; // HTTP server port
 const app = express();
 app.use(bodyParser.json());
 
@@ -44,7 +44,7 @@ ftpServer.listen().then(() => {
 });
 
 // CSV Append Feature
-const csvFilePath = path.join(ftpRoot, 'data.csv');
+const csvFilePath = path.join(ftpRoot, 'sales_info.csv');
 
 const csvWriter = createObjectCsvWriter({
     path: csvFilePath,
@@ -57,8 +57,17 @@ const csvWriter = createObjectCsvWriter({
 });
 
 app.post('/append-csv', async (req, res) => {
+    // Extract credentials; in a real scenario, consider using headers or more secure methods
+    const { username, password, data } = req.body;
+
+    // Simple authentication check
+    if (username !== USERNAME || password !== PASSWORD) {
+        return res.status(401).send('Authentication failed: Invalid username or password');
+    }
+
     try {
-        await csvWriter.writeRecords([req.body]);
+        // Assuming the actual CSV data is contained in a 'data' field in the request body
+        await csvWriter.writeRecords([data]);
         res.send('Data appended successfully to CSV.');
     } catch (error) {
         console.error('Failed to append data to CSV:', error);

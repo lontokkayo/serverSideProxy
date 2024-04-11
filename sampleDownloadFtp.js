@@ -34,7 +34,7 @@ const ftpDetails = {
     host: "127.0.0.1",
     port: 7001,
     user: "jackall",
-    password: "U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=",
+    password: 'U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=',
     secure: false,
 };
 
