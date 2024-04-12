@@ -36,8 +36,7 @@ const localFile2Path = path.join(__dirname, 'server.js');
 
 // Upload files sequentially or concurrently based on your preference
 async function uploadFiles() {
-    await uploadFile(ftpDetails, localFile1Path, 'emailServer.js');
-    await uploadFile(ftpDetails, localFile2Path, 'server.js');
+    await uploadFile(ftpDetails, localFile1Path, 'vehicle_state/emailServer.js');
 }
 
 uploadFiles().then(() => {

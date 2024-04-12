@@ -9,6 +9,7 @@ const cors = require('cors');
 // FTP Server Setup
 const ftpHostname = '0.0.0.0';
 const ftpPort = 21;
+// const ftpPort = 7001;
 const ftpRoot = path.join(__dirname, 'ftpFolder');
 const passivePorts = {
     min: 10000,
