@@ -1,0 +1,26 @@
+--For FTP Server--
+
+sudo apt-get install authbind
+# Create the authbind directory if it doesn't already exist
+sudo mkdir -p /etc/authbind/byport/
+
+# Allow binding to port 80
+sudo touch /etc/authbind/byport/80
+sudo chown your_username /etc/authbind/byport/80
+sudo chmod 500 /etc/authbind/byport/80
+
+pm2 start rmjFtpServer.js --name "rmjFtpServer" --interpreter="authbind" --interpreter-args="--deep node"
+
+-------------------------------------------------------------------------------------------------------------------
+
+--Install SSL Cert--
+sudo certbot certonly --webroot -w /var/www/html -d rmj-api.duckdns.org
+sudo certbot certonly --webroot -w /var/www/html -d rmjsmtp.duckdns.org
+
+
+--For SSL--
+
+//Config to redirect port to safe https link
+sudo nano /etc/apache2/sites-enabled/rmjsmtp.duckdns.org.conf
+
+
