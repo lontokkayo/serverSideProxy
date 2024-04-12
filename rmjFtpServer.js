@@ -7,7 +7,7 @@ const fs = require('fs');
 const cors = require('cors');
 // require('dotenv').config();
 // FTP Server Setup
-const ftpHostname = '0.0.0.0';
+const ftpHostname = '34.97.28.40';
 const ftpPort = 7001;
 const ftpRoot = path.join(__dirname, 'ftpFolder');
 

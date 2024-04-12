@@ -38,6 +38,15 @@ async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
 //     secure: false,
 // };
 
+const ftpDetails = {
+    host: "rmj-api.duckdns.org",
+    // port: 7001,
+    user: "jackall",
+    password: 'U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=',
+    secure: false,
+};
+
+
 // const ftpDetails = {
 //     host: "test.rebex.net",
 //     // port: 7001, // Match the server's port
@@ -46,13 +55,13 @@ async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
 //     secure: false, // Keep it false since the server is set up without encryption
 // };
 
-const ftpDetails = {
-    url: "control.realmotor.jp",
-    // port: 7001, // Match the server's port
-    user: "rmj-jackall'",
-    password: "Y7bwoHzY2J",
-    secure: false, // Keep it false since the server is set up without encryption
-};
+// const ftpDetails = {
+//     url: "control.realmotor.jp",
+//     // port: 7001, // Match the server's port
+//     user: "rmj-jackall'",
+//     password: "Y7bwoHzY2J",
+//     secure: false, // Keep it false since the server is set up without encryption
+// };
 
 const remoteDirPath = "/"; // Adjust as needed
 const localDirPath = "./downloaded"; // This directory will be created if it doesn't exist
