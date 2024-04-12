@@ -40,7 +40,7 @@ async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
 
 const ftpDetails = {
     host: "rmj-api.duckdns.org",
-    // port: 7001,
+    // port: 990,
     user: "jackall",
     password: 'U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=',
     secure: false,

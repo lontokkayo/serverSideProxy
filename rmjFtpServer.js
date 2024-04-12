@@ -8,7 +8,7 @@ const cors = require('cors');
 // require('dotenv').config();
 // FTP Server Setup
 const ftpHostname = '0.0.0.0';
-const ftpPort = 7001;
+const ftpPort = 21;
 const ftpRoot = path.join(__dirname, 'ftpFolder');
 
 // HTTP Server Setup
@@ -26,8 +26,8 @@ const USERNAME = 'jackall';
 const PASSWORD = 'U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=';
 
 const ftpServer = new FtpSrv({
-    url: `ftp://${ftpHostname}`,
-    pasv_url: ftpHostname,
+    url: `ftp://${ftpHostname}:${ftpPort}`, // Ensure including the port here
+    pasv_url: '34.97.28.40', // This needs to be reachable from client machines
     anonymous: false,
     root: ftpRoot,
 });
