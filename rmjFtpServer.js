@@ -26,7 +26,7 @@ const USERNAME = 'jackall';
 const PASSWORD = 'U2FsdGVkX18WCFA/fjC/fB6DMhtOOIL/xeVF2tD2b7c=';
 
 const ftpServer = new FtpSrv({
-    url: `ftp://${ftpHostname}`, // Ensure including the port here
+    url: `ftp://${ftpHostname}:${ftpPort}`, // Ensure including the port here
     pasv_url: '34.97.28.40', // This needs to be reachable from client machines
     anonymous: false,
     root: ftpRoot,
