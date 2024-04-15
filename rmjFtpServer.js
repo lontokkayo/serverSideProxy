@@ -86,7 +86,7 @@ const csvSalesInfoWriter = createObjectCsvWriter({
 });
 
 const csvClientsWriter = createObjectCsvWriter({
-    path: csvSalesInfoFilePath,
+    path: csvClientsFilePath,
     header: [
         { id: 'id', title: 'id' },
         { id: 'client_name', title: 'client_name' },
