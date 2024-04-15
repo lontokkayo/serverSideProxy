@@ -100,6 +100,7 @@ const csvClientsWriter = createObjectCsvWriter({
     alwaysQuote: true
 });
 //Write Contents clients.csv
+
 app.post('/append-csv-clients', async (req, res) => {
     // Extract credentials; in a real scenario, consider using headers or more secure methods
     const { username, password, data } = req.body;
