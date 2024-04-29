@@ -56,6 +56,7 @@ exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.s
     // Query for documents with a dueDate of today or later, and isCancelled is false (uncomment and use as needed)
     const snapshotForPaymentReminder = await issuedInvoicesRef
         .where('bankInformations.dueDate', '<=', today)
+        .where('stepIndicator.value', '<', 4)
         .where('isCancelled', '==', false)
         .where('orderPlaced', '==', true)
         .get();
