@@ -38,7 +38,7 @@ const sendEmail = async (to, subject, htmlContent) => {
 //     .timeZone('Asia/Tokyo') // Ensures that the schedule follows Tokyo time.
 //     .onRun(async context => {
 // exports.sendDueDateRemindersAndAddMessage = functions.region('asia-northeast2').pubsub.schedule('every 24 hours').timeZone('Asia/Tokyo').onRun(async () => {
-// exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.schedule('every 1 minutes').timeZone('Asia/Tokyo').onRun(async () => {
+// exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.schedule('every 3 minutes').timeZone('Asia/Tokyo').onRun(async () => {
 exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
     const promisesForPaymentReminder = [];
     const promisesForOrderItemReminder = [];
@@ -59,6 +59,8 @@ exports.sendRemindersNotification = functions.region('asia-northeast2').pubsub.s
         // .where('stepIndicator.value', '==', 3)
         .where('isCancelled', '==', false)
         .where('orderPlaced', '==', true)
+        .where('fullyPaid', '==', false)
+
         .get();
 
 
