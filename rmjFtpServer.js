@@ -53,8 +53,8 @@ ftpServer.listen().then(() => {
 });
 
 // CSV Append Feature
-const csvSalesInfoFilePath = path.join(ftpRoot, 'sales_info.csv');
-const csvClientsFilePath = path.join(ftpRoot, 'clients.csv');
+const csvSalesInfoFilePath = path.join(ftpRoot, 'public', 'uploads', 'tempo', 'sales_info.csv');
+const csvClientsFilePath = path.join(ftpRoot, 'public', 'uploads', 'tempo', 'clients.csv');
 
 const csvSalesInfoWriter = createObjectCsvWriter({
     path: csvSalesInfoFilePath,
