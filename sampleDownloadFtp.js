@@ -63,7 +63,7 @@ const ftpDetails = {
 //     secure: false, // Keep it false since the server is set up without encryption
 // };
 
-const remoteDirPath = "/"; // Adjust as needed
+const remoteDirPath = "/public/uploads/tempo"; // Adjust as needed
 const localDirPath = "./downloaded"; // This directory will be created if it doesn't exist
 
 downloadDirectory(ftpDetails, remoteDirPath, localDirPath);
