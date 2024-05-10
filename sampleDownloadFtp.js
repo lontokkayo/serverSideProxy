@@ -9,7 +9,7 @@ function ensureLocalDir(dir) {
     }
 }
 
-async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
+async function downloadFiles(ftpDetails, filesToDownload, remoteDirPath, localDirPath) {
     const client = new ftp.Client();
     client.ftp.verbose = true;
 
@@ -20,15 +20,18 @@ async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
         await client.access(ftpDetails);
         await client.cd(remoteDirPath); // Navigate to the remote directory
 
-        // Download the entire directory to the local directory
-        await client.downloadToDir(localDirPath, remoteDirPath);
-        console.log(`Downloaded contents of ${remoteDirPath} to ${localDirPath}`);
+        // Download specific files
+        for (let file of filesToDownload) {
+            const localFilePath = path.join(localDirPath, file);
+            const remoteFilePath = path.join(remoteDirPath, file);
+            await client.downloadTo(localFilePath, remoteFilePath);
+            console.log(`Downloaded ${remoteFilePath} to ${localFilePath}`);
+        }
     } catch (error) {
-        console.error("Failed to download directory:", error);
+        console.error("Failed to download files:", error);
     } finally {
         client.close();
     }
-    
 }
 
 // const ftpDetails = {
@@ -59,12 +62,13 @@ const ftpDetails = {
 // const ftpDetails = {
 //     url: "control.realmotor.jp",
 //     // port: 7001, // Match the server's port
-//     user: "rmj-jackall'",
-//     password: "Y7bwoHzY2J",
+//     user: "rmj-jackall",
+//     password: "od7hIcWkz3",
 //     secure: false, // Keep it false since the server is set up without encryptio n
 // };
 
-const remoteDirPath = "/public/uploads/tempo"; // Adjust as needed
+const remoteDirPath = "/"; // Update to the correct path
 const localDirPath = "./downloaded"; // This directory will be created if it doesn't exist
+const filesToDownload = ["sales_info.csv", "clients.csv"];
 
-downloadDirectory(ftpDetails, remoteDirPath, localDirPath);
+downloadFiles(ftpDetails, filesToDownload, remoteDirPath, localDirPath);
