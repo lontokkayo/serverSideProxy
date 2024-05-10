@@ -28,6 +28,7 @@ async function downloadDirectory(ftpDetails, remoteDirPath, localDirPath) {
     } finally {
         client.close();
     }
+    
 }
 
 // const ftpDetails = {
@@ -60,10 +61,10 @@ const ftpDetails = {
 //     // port: 7001, // Match the server's port
 //     user: "rmj-jackall'",
 //     password: "Y7bwoHzY2J",
-//     secure: false, // Keep it false since the server is set up without encryption
+//     secure: false, // Keep it false since the server is set up without encryptio n
 // };
 
-const remoteDirPath = "/public/uploads/temp"; // Adjust as needed
+const remoteDirPath = "/public/uploads/tempo"; // Adjust as needed
 const localDirPath = "./downloaded"; // This directory will be created if it doesn't exist
 
 downloadDirectory(ftpDetails, remoteDirPath, localDirPath);
