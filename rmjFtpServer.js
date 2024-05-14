@@ -54,10 +54,42 @@ ftpServer.listen().then(() => {
 
 // CSV Append Feature
 const csvSalesInfoFilePath = path.join(ftpRoot, 'public', 'uploads', 'tempo', 'sales_info.csv');
+const csvSalesInfoFilePathRoot = path.join(ftpRoot, 'sales_info.csv');
+
 const csvClientsFilePath = path.join(ftpRoot, 'public', 'uploads', 'tempo', 'clients.csv');
+const csvClientsFilePathRoot = path.join(ftpRoot, 'clients.csv');
 
 const csvSalesInfoWriter = createObjectCsvWriter({
     path: csvSalesInfoFilePath,
+    header: [
+        { id: 'id', title: 'id' },
+        { id: 'stock_system_id', title: 'stock_system_id' },
+        { id: 'sales_date', title: 'sales_date' },
+        { id: 'fob', title: 'fob' },
+        { id: 'freight', title: 'freight' },
+        { id: 'insurance', title: 'insurance' },
+        { id: 'inspection', title: 'inspection' },
+        { id: 'cost_name1', title: 'cost_name1' },
+        { id: 'cost1', title: 'cost1' },
+        { id: 'cost_name2', title: 'cost_name2' },
+        { id: 'cost2', title: 'cost2' },
+        { id: 'cost_name3', title: 'cost_name3' },
+        { id: 'cost3', title: 'cost3' },
+        { id: 'cost_name4', title: 'cost_name4' },
+        { id: 'cost4', title: 'cost4' },
+        { id: 'cost_name5', title: 'cost_name5' },
+        { id: 'cost5', title: 'cost5' },
+        { id: 'coupon_discount', title: 'coupon_discount' },
+        { id: 'price_discount', title: 'price_discount' },
+        { id: 'subtotal', title: 'subtotal' },
+        { id: 'clients', title: 'clients' }
+    ],
+    append: true,
+    alwaysQuote: true
+});
+
+const csvSalesInfoWriterRoot = createObjectCsvWriter({
+    path: csvSalesInfoFilePathRoot,
     header: [
         { id: 'id', title: 'id' },
         { id: 'stock_system_id', title: 'stock_system_id' },
@@ -99,6 +131,20 @@ const csvClientsWriter = createObjectCsvWriter({
     append: true,
     alwaysQuote: true
 });
+const csvClientsWriterRoot = createObjectCsvWriter({
+    path: csvClientsFilePathRoot,
+    header: [
+        { id: 'id', title: 'id' },
+        { id: 'client_name', title: 'client_name' },
+        { id: 'address', title: 'address' },
+        { id: 'phone', title: 'phone' },
+        { id: 'email', title: 'email' },
+        { id: 'country_name', title: 'country_name' },
+        { id: 'note', title: 'note' },
+    ],
+    append: true,
+    alwaysQuote: true
+});
 //Write Contents clients.csv
 
 app.post('/append-csv-clients', async (req, res) => {
@@ -113,6 +159,8 @@ app.post('/append-csv-clients', async (req, res) => {
     try {
         // Assuming the actual CSV data is contained in a 'data' field in the request body
         await csvClientsWriter.writeRecords([data]);
+        await csvClientsWriterRoot.writeRecords([data]);
+
         res.send('Data appended successfully to CSV.');
     } catch (error) {
         console.error('Failed to append data to CSV:', error);
@@ -133,6 +181,8 @@ app.post('/append-csv-sales-info', async (req, res) => {
     try {
         // Assuming the actual CSV data is contained in a 'data' field in the request body
         await csvSalesInfoWriter.writeRecords([data]);
+        await csvSalesInfoWriterRoot.writeRecords([data]);
+
         res.send('Data appended successfully to CSV.');
     } catch (error) {
         console.error('Failed to append data to CSV:', error);
@@ -162,6 +212,13 @@ app.post('/reset-csv-sales-info', async (req, res) => {
             }
             res.send('CSV contents cleared, except for column titles.');
         });
+        fs.writeFile(csvSalesInfoFilePathRoot, headers, (err) => {
+            if (err) {
+                console.error('Failed to reset CSV:', err);
+                return res.status(500).send('Failed to reset CSV.');
+            }
+            res.send('CSV contents cleared, except for column titles.');
+        });
     } catch (error) {
         console.error('Failed to manually reset CSV:', error);
         res.status(500).send('Failed to reset CSV.');
@@ -183,6 +240,13 @@ app.post('/reset-csv-clients', async (req, res) => {
 
     try {
         fs.writeFile(csvClientsFilePath, headers, (err) => {
+            if (err) {
+                console.error('Failed to reset CSV:', err);
+                return res.status(500).send('Failed to reset CSV.');
+            }
+            res.send('CSV contents cleared, except for column titles.');
+        });
+        fs.writeFile(csvClientsFilePathRoot, headers, (err) => {
             if (err) {
                 console.error('Failed to reset CSV:', err);
                 return res.status(500).send('Failed to reset CSV.');
