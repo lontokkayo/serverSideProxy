@@ -185,6 +185,11 @@ const dataOptions = [
 
 const dataMaker = [
   {
+    value: 0,
+    name: "Select",
+    fieldTitle: "maker"
+  },
+  {
     value: 43,
     name: "Toyota",
     fieldTitle: "maker"
@@ -226,7 +231,7 @@ const dataMaker = [
   },
   {
     value: 58,
-    name: "Volkswage",
+    name: "Volkswagen",
     fieldTitle: "maker"
   },
   {
@@ -235,8 +240,18 @@ const dataMaker = [
     fieldTitle: "maker"
   },
   {
+    value: 20,
+    name: "Land Rover",
+    fieldTitle: "maker"
+  },
+  {
     value: 49,
     name: "Isuzu",
+    fieldTitle: "maker"
+  },
+  {
+    value: 57,
+    name: "Audi",
     fieldTitle: "maker"
   },
   {
@@ -255,8 +270,148 @@ const dataMaker = [
     fieldTitle: "maker"
   },
   {
+    value: 10,
+    name: "Alfa Romeo",
+    fieldTitle: "maker"
+  },
+  {
+    value: 4,
+    name: "AMG",
+    fieldTitle: "maker"
+  },
+  {
+    value: 23,
+    name: "Aston Martin",
+    fieldTitle: "maker"
+  },
+  {
+    value: 21,
+    name: "Bentley",
+    fieldTitle: "maker"
+  },
+  {
+    value: 7,
+    name: "BMW Alpina",
+    fieldTitle: "maker"
+  },
+  {
+    value: 29,
+    name: "Buick",
+    fieldTitle: "maker"
+  },
+  {
+    value: 25,
+    name: "Cadillac",
+    fieldTitle: "maker"
+  },
+  {
+    value: 26,
+    name: "Chevrolet",
+    fieldTitle: "maker"
+  },
+  {
+    value: 35,
+    name: "Chrysler",
+    fieldTitle: "maker"
+  },
+  {
+    value: 1,
+    name: "Citroen",
+    fieldTitle: "maker"
+  },
+  {
+    value: 15,
+    name: "Daimler",
+    fieldTitle: "maker"
+  },
+  {
+    value: 30,
+    name: "Dodge",
+    fieldTitle: "maker"
+  },
+  {
+    value: 39,
+    name: "Donkervoort",
+    fieldTitle: "maker"
+  },
+  {
+    value: 8,
+    name: "Ferrari",
+    fieldTitle: "maker"
+  },
+  {
+    value: 13,
+    name: "Fiat",
+    fieldTitle: "maker"
+  },
+  {
     value: 62,
     name: "Hino",
+    fieldTitle: "maker"
+  },
+  {
+    value: 27,
+    name: "Hummer",
+    fieldTitle: "maker"
+  },
+  {
+    value: 40,
+    name: "Hyundai",
+    fieldTitle: "maker"
+  },
+  {
+    value: 18,
+    name: "Jaguar",
+    fieldTitle: "maker"
+  },
+  {
+    value: 34,
+    name: "Jeep",
+    fieldTitle: "maker"
+  },
+  {
+    value: 12,
+    name: "Lamborghini",
+    fieldTitle: "maker"
+  },
+  {
+    value: 11,
+    name: "Lancia",
+    fieldTitle: "maker"
+  },
+  {
+    value: 31,
+    name: "Lincoln",
+    fieldTitle: "maker"
+  },
+  {
+    value: 16,
+    name: "Lotus",
+    fieldTitle: "maker"
+  },
+  {
+    value: 9,
+    name: "Maserati",
+    fieldTitle: "maker"
+  },
+  {
+    value: 6,
+    name: "Maybach",
+    fieldTitle: "maker"
+  },
+  {
+    value: 32,
+    name: "Mercury",
+    fieldTitle: "maker"
+  },
+  {
+    value: 14,
+    name: "MG",
+    fieldTitle: "maker"
+  },
+  {
+    value: 56,
+    name: "Mini",
     fieldTitle: "maker"
   },
   {
@@ -265,10 +420,101 @@ const dataMaker = [
     fieldTitle: "maker"
   },
   {
+    value: 45,
+    name: "Mitsuoka",
+    fieldTitle: "maker"
+  },
+  {
+    value: 24,
+    name: "Morgan",
+    fieldTitle: "maker"
+  },
+  {
+    value: 66,
+    name: "Nissan diesel",
+    fieldTitle: "maker"
+  },
+  {
+    value: 54,
+    name: "Opel",
+    fieldTitle: "maker"
+  },
+  {
+    value: 61,
+    name: "Other",
+    fieldTitle: "maker"
+  },
+  {
+    value: 3,
+    name: "Peugeot",
+    fieldTitle: "maker"
+  },
+  {
+    value: 38,
+    name: "Pontiac",
+    fieldTitle: "maker"
+  },
+  {
+    value: 55,
+    name: "Porsche",
+    fieldTitle: "maker"
+  },
+  {
+    value: 2,
+    name: "Renault",
+    fieldTitle: "maker"
+  },
+  {
+    value: 22,
+    name: "Rolls-Royce",
+    fieldTitle: "maker"
+  },
+  {
+    value: 19,
+    name: "Rover",
+    fieldTitle: "maker"
+  },
+  {
+    value: 37,
+    name: "Saab",
+    fieldTitle: "maker"
+  },
+  {
+    value: 28,
+    name: "Saturn",
+    fieldTitle: "maker"
+  },
+  {
+    value: 5,
+    name: "Smart",
+    fieldTitle: "maker"
+  },
+  {
+    value: 53,
+    name: "Tommykairazz",
+    fieldTitle: "maker"
+  },
+  {
+    value: 17,
+    name: "TVR",
+    fieldTitle: "maker"
+  },
+  {
     value: 36,
     name: "Volvo",
     fieldTitle: "maker"
+  },
+  {
+    value: 52,
+    name: "ZEROSPORTS",
+    fieldTitle: "maker"
+  },
+  {
+    value: 65,
+    name: "フィアット",
+    fieldTitle: "maker"
   }
+  
 ];
 
 
@@ -2820,11 +3066,11 @@ async function formatVehicleData(jsonData) {
   // Similar logic can be applied for maker, model, body type, etc., based on your existing logic
   // Maker
   const matchedMaker = dataMaker.find(item => item.value.toString() === jsonData.m_as_maker_id);
-  const makerName = matchedMaker ? matchedMaker.name : 'Others';
+  const makerName = matchedMaker ? matchedMaker.name.toUpperCase() : 'Others';
 
   // Model
   const matchedModel = dataModel.find(item => item.value.toString() === jsonData.m_as_model_id);
-  const modelName = matchedModel ? matchedModel.name : 'Others';
+  const modelName = matchedModel ? matchedModel.name.toUpperCase() : 'Others';
 
   // Body Type
   const matchedBodyType = dataBodyType.find(item => item.value.toString() === jsonData.m_as_bodytype_id);
