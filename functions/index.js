@@ -405,13 +405,27 @@ exports.updateCurrencyRatesScheduled = functions.region('asia-northeast2').pubsu
         console.error('Error updating currency rates:', error);
     }
 });
+// exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('every 1 minutes').timeZone('Asia/Tokyo').onRun(async () => {
+    exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
+    async function fetchWithRetry(url, options, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response;
+            } catch (error) {
+                console.error(`Attempt ${i + 1} failed: ${error.message}`);
+                if (i === retries - 1) throw error;
+                await new Promise(res => setTimeout(res, 1000)); // Wait 1 second before retrying
+            }
+        }
+    }
 
-exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
     try {
-
-
-        // Clear CSV contents
-        const clearClientsResponse = await fetch('https://rmj-api.duckdns.org/modifyCsv/reset-csv-clients', {
+        // Clear CSV contents for clients
+        const clearClientsResponse = await fetchWithRetry('https://rmj-api.duckdns.org/modifyCsv/reset-csv-clients', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -423,12 +437,13 @@ exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 
         });
 
         if (clearClientsResponse.ok) {
-            console.log('Success', 'CSV contents have been cleared.');
+            console.log('Success', 'CSV contents for clients have been cleared.');
         } else {
-            console.log('Error', 'Failed to clear CSV contents.');
+            console.log('Error', 'Failed to clear CSV contents for clients.');
         }
 
-        const clearSalesInfoResponse = await fetch('https://rmj-api.duckdns.org/modifyCsv/reset-csv-sales-info', {
+        // Clear CSV contents for sales info
+        const clearSalesInfoResponse = await fetchWithRetry('https://rmj-api.duckdns.org/modifyCsv/reset-csv-sales-info', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -440,13 +455,12 @@ exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 
         });
 
         if (clearSalesInfoResponse.ok) {
-            console.log('Success', 'CSV contents have been cleared.');
+            console.log('Success', 'CSV contents for sales info have been cleared.');
         } else {
-            console.log('Error', 'Failed to clear CSV contents.');
+            console.log('Error', 'Failed to clear CSV contents for sales info.');
         }
     } catch (error) {
         console.error(error);
         console.log('Error', 'An error occurred while managing CSV data.');
     }
-
 });
