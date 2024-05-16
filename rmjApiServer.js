@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+const firebase = require('firebase/app');
+
 const cors = require('cors');
 const axios = require('axios');
 // const moment = require('moment');
@@ -514,7 +516,7 @@ const dataMaker = [
     name: "フィアット",
     fieldTitle: "maker"
   }
-  
+
 ];
 
 
@@ -3261,6 +3263,49 @@ async function formatVehicleData(jsonData) {
   return formattedData;
 }
 
+
+const incrementCount = async (make, model) => {
+  const vehicleCountRef = db.collection("counts").doc("vehicles");
+  const makeCountRef = db.collection("counts").doc("make");
+  const modelCountRef = db.collection("counts").doc("model");
+
+
+  try {
+    await db.runTransaction(async (transaction) => {
+      const vehicleCountSnap = await transaction.get(vehicleCountRef);
+      const makeCountSnap = await transaction.get(makeCountRef);
+      const modelCountSnap = await transaction.get(modelCountRef);
+
+      if (!vehicleCountSnap.exists()) {
+        transaction.set(vehicleCountRef, { stockCount: 1, totalCount: 1 });
+      } else {
+        const increment = firebase.firestore.FieldValue.increment(1);
+        transaction.update(vehicleCountRef, { stockCount: increment, totalCount: increment });
+      }
+
+      if (!makeCountSnap.exists()) {
+        transaction.set(makeCountRef, { [make]: 1 }, { merge: true });
+      } else {
+        const increment = firebase.firestore.FieldValue.increment(1);
+        transaction.set(makeCountRef, { [make]: increment(1) }, { merge: true });
+      }
+
+      if (!modelCountSnap.exists()) {
+        transaction.set(modelCountRef, { [model]: 1 }, { merge: true });
+      } else {
+        const increment = firebase.firestore.FieldValue.increment(1);
+        transaction.set(modelCountRef, { [model]: increment(1) }, { merge: true });
+      }
+
+    });
+
+    console.log("Vehicle count incremented successfully.");
+  } catch (error) {
+    console.error("Failed to increment vehicle count: ", error);
+  }
+};
+
+
 app.get('/', async (req, res) => {
   // JSONP requests use query parameters, not the request body
   let jsonData = req.query;
@@ -3279,16 +3324,35 @@ app.get('/', async (req, res) => {
 
     switch (jsonData.action_cd) {
       case 'insert':
-        await docRef.create(formattedData);
-        resultMessage = `Document inserted with ID: ${jsonData.stock_no}`;
+        await docRef.create(formattedData)
+          .then(async () => {
+            await incrementCount(formattedData.make, formattedData.model);  // Increment count after successful insertion
+            console.log(`Document inserted with ID: ${jsonData.stock_no}`);
+          })
+          .catch(error => {
+            console.error("Failed to insert document: ", error);
+            throw new Error(`Failed to insert document with ID: ${jsonData.stock_no}`);
+          });
         break;
       case 'update':
-        await docRef.set(formattedData, { merge: true });
-        resultMessage = `Document updated with ID: ${jsonData.stock_no}`;
+        await docRef.set(formattedData, { merge: true })
+          .then(() => {
+            console.log(`Document updated with ID: ${jsonData.stock_no}`);
+          })
+          .catch(error => {
+            console.error("Failed to update document: ", error);
+            throw new Error(`Failed to update document with ID: ${jsonData.stock_no}`);
+          });
         break;
       case 'delete':
-        await docRef.delete();
-        resultMessage = `Document deleted with ID: ${jsonData.stock_no}`;
+        await docRef.delete()
+          .then(() => {
+            console.log(`Document deleted with ID: ${jsonData.stock_no}`);
+          })
+          .catch(error => {
+            console.error("Failed to delete document: ", error);
+            throw new Error(`Failed to delete document with ID: ${jsonData.stock_no}`);
+          });
         break;
       default:
         throw new Error(`Invalid 'action_cd' value: ${jsonData.action_cd}`);

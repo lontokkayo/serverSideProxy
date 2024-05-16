@@ -308,6 +308,7 @@ Real Motor Japan`;
 
 
 });
+
 // exports.updateCurrencyRatesScheduled = functions.region('asia-northeast2').pubsub.schedule('every 1 minutes').timeZone('Asia/Tokyo').onRun(async () => {
 exports.updateCurrencyRatesScheduled = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
     try {
@@ -405,8 +406,9 @@ exports.updateCurrencyRatesScheduled = functions.region('asia-northeast2').pubsu
         console.error('Error updating currency rates:', error);
     }
 });
+
 // exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('every 1 minutes').timeZone('Asia/Tokyo').onRun(async () => {
-    exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
+exports.resetCsvData = functions.region('asia-northeast2').pubsub.schedule('0 0 * * *').timeZone('Asia/Tokyo').onRun(async () => {
     async function fetchWithRetry(url, options, retries = 3) {
         for (let i = 0; i < retries; i++) {
             try {
