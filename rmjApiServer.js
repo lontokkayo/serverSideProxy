@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const firebase = require('firebase/app');
+const { doc, runTransaction, increment } = require('firebase/firestore');
 
 const cors = require('cors');
 const axios = require('axios');
@@ -3269,34 +3270,31 @@ const incrementCount = async (make, model) => {
   const makeCountRef = db.collection("counts").doc("make");
   const modelCountRef = db.collection("counts").doc("model");
 
-
   try {
     await db.runTransaction(async (transaction) => {
       const vehicleCountSnap = await transaction.get(vehicleCountRef);
       const makeCountSnap = await transaction.get(makeCountRef);
       const modelCountSnap = await transaction.get(modelCountRef);
 
-      if (!vehicleCountSnap.exists()) {
+      const increment = admin.firestore.FieldValue.increment(1);  // Use admin's Firestore instance
+
+      if (!vehicleCountSnap.exists) {
         transaction.set(vehicleCountRef, { stockCount: 1, totalCount: 1 });
       } else {
-        const increment = firebase.firestore.FieldValue.increment(1);
         transaction.update(vehicleCountRef, { stockCount: increment, totalCount: increment });
       }
 
-      if (!makeCountSnap.exists()) {
+      if (!makeCountSnap.exists) {
         transaction.set(makeCountRef, { [make]: 1 }, { merge: true });
       } else {
-        const increment = firebase.firestore.FieldValue.increment(1);
-        transaction.set(makeCountRef, { [make]: increment(1) }, { merge: true });
+        transaction.set(makeCountRef, { [make]: increment }, { merge: true });
       }
 
-      if (!modelCountSnap.exists()) {
+      if (!modelCountSnap.exists) {
         transaction.set(modelCountRef, { [model]: 1 }, { merge: true });
       } else {
-        const increment = firebase.firestore.FieldValue.increment(1);
-        transaction.set(modelCountRef, { [model]: increment(1) }, { merge: true });
+        transaction.set(modelCountRef, { [model]: increment }, { merge: true });
       }
-
     });
 
     console.log("Vehicle count incremented successfully.");
