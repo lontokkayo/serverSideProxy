@@ -2938,11 +2938,8 @@ const dataFuelType = [
 ];
 
 const dataStockStatus = [
-  { value: 1, name: 'Gasoline' },
-  { value: 2, name: 'Diesel' },
-  { value: 3, name: 'Rotary' },
-  { value: 4, name: 'Hybrid' },
-  { value: 5, name: 'Electricity' }
+  { value: "In-Stock", name: 'On-Sale' },
+  { value: 'Sold', name: 'Sold' },
 ];
 
 
@@ -3205,6 +3202,10 @@ async function formatVehicleData(jsonData) {
   const stockID = stockIdTop
   //stock id
 
+  //stock status
+  const stockStatusId = doc.data().m_as_steering_id;
+  const matchedStockStatus = dataStockStatus.find(item => item.value.toString() === stockStatusId);
+  const stockStatus = matchedStockStatus ? matchedStockStatus.name : ''; // Access 'name' property
 
   // const currentDateInfo = prepareCurrentDate();
   // Compiling all formatted data
@@ -3244,7 +3245,7 @@ async function formatVehicleData(jsonData) {
     salesID: salesID,
     steering: steering,
     stockID: stockID,
-    stockStatus: "On-Sale",
+    stockStatus: stockStatus,
     transmission: transmission,
     ...fieldTitlesForVehicle, // Spread the fieldTitles into the vehicle object
     ...categorizedOptions,
