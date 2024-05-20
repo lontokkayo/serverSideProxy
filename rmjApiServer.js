@@ -2937,6 +2937,15 @@ const dataFuelType = [
   { value: 5, name: 'Electricity' }
 ];
 
+const dataStockStatus = [
+  { value: 1, name: 'Gasoline' },
+  { value: 2, name: 'Diesel' },
+  { value: 3, name: 'Rotary' },
+  { value: 4, name: 'Hybrid' },
+  { value: 5, name: 'Electricity' }
+];
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -3326,6 +3335,7 @@ app.get('/', async (req, res) => {
           .then(async () => {
             await incrementCount(formattedData.make, formattedData.model);  // Increment count after successful insertion
             console.log(`Document inserted with ID: ${jsonData.stock_no}`);
+            console.log(`JSON Data: ${jsonData}`);
           })
           .catch(error => {
             console.error("Failed to insert document: ", error);
@@ -3336,6 +3346,7 @@ app.get('/', async (req, res) => {
         await docRef.set(formattedData, { merge: true })
           .then(() => {
             console.log(`Document updated with ID: ${jsonData.stock_no}`);
+            console.log(`JSON Data: ${jsonData}`);
           })
           .catch(error => {
             console.error("Failed to update document: ", error);

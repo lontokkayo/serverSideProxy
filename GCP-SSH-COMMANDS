@@ -22,4 +22,15 @@ sudo certbot certonly --webroot -w /var/www/html -d rmjsmtp.duckdns.org
 //Config to redirect port to safe https link
 sudo nano /etc/apache2/sites-enabled/rmjsmtp.duckdns.org.conf
 
+-------------------------------------------------------------------------------------------------------------------
+--Git Pull Fix (Step by step)--
+git checkout -- package-lock.json package.json
+git pull
+
+rm package-lock.json
+npm install
+git add package-lock.json
+git commit -m "Regenerated package-lock.json after merge conflict"
+
+git pull
 
