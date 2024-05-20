@@ -3203,9 +3203,9 @@ async function formatVehicleData(jsonData) {
   //stock id
 
   //stock status
-  const stockStatusId = doc.data().m_as_steering_id;
-  const matchedStockStatus = dataStockStatus.find(item => item.value.toString() === stockStatusId);
-  const stockStatus = matchedStockStatus ? matchedStockStatus.name : ''; // Access 'name' property
+  const matchedStockStatus = dataStockStatus.find(item => item.value.toString() === jsonData.status);
+  const stockStatus = matchedStockStatus ? matchedStockStatus.name : '';
+  //stock status
 
   // const currentDateInfo = prepareCurrentDate();
   // Compiling all formatted data
