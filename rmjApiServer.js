@@ -3335,7 +3335,7 @@ app.get('/', async (req, res) => {
           .then(async () => {
             await incrementCount(formattedData.make, formattedData.model);  // Increment count after successful insertion
             console.log(`Document inserted with ID: ${jsonData.stock_no}`);
-            console.log(`JSON Data: ${jsonData}`);
+            console.log(`JSON Data: ${JSON.stringify(jsonData)}`);
           })
           .catch(error => {
             console.error("Failed to insert document: ", error);
@@ -3346,7 +3346,7 @@ app.get('/', async (req, res) => {
         await docRef.set(formattedData, { merge: true })
           .then(() => {
             console.log(`Document updated with ID: ${jsonData.stock_no}`);
-            console.log(`JSON Data: ${jsonData}`);
+            console.log(`JSON Data: ${JSON.stringify(jsonData)}`);
           })
           .catch(error => {
             console.error("Failed to update document: ", error);
