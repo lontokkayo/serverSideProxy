@@ -202,7 +202,8 @@ app.post('/reset-csv-sales-info', async (req, res) => {
     }
 
     // Manually write the headers to the file
-    const headers = '"id","stock_system_id","sales_date","fob","freight","insurance","inspection","cost_name1","cost1","cost_name2","cost2","cost_name3","cost3","cost_name4","cost4","cost_name5","cost5","coupon_discount","price_discount","subtotal","clients","sales_pending"\n';
+    const headers = '"id","stock_system_id","sales_date","fob","freight","insurance","inspection","cost_name1","cost1","cost_name2","cost2","cost_name3","cost3","cost_name4","cost4","cost_name5","cost5","coupon_discount","price_discount","subtotal","clients"\n';
+    // const headers = '"id","stock_system_id","sales_date","fob","freight","insurance","inspection","cost_name1","cost1","cost_name2","cost2","cost_name3","cost3","cost_name4","cost4","cost_name5","cost5","coupon_discount","price_discount","subtotal","clients","sales_pending"\n';
 
     try {
         fs.writeFile(csvSalesInfoFilePath, headers, (err) => {
