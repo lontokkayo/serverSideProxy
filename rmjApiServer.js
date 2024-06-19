@@ -17,22 +17,20 @@ admin.initializeApp({
   // Add other configuration variables like databaseURL, storageBucket if needed
 });
 
+
+
+
+
 // Get a Firestore instance
 const db = admin.firestore();
 
 const app = express();
 const port = 7000;
 
+app.use(bodyParser.json());
 const corsOptions = {
-  allowedHeaders: ['Content-Type', 'username', 'accessKey'],
-  origin: function (origin, callback) {
-    const allowedOrigins = ['http://153.122.121.214', 'http://153.122.122.149'];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true); // Origin is allowed
-    } else {
-      callback(new Error('Not allowed by CORS')); // Origin is not allowed
-    }
-  }
+  origin: ['http://153.122.121.214', 'http://153.122.122.149'], // Allow only this origin to make requests
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 app.use(cors(corsOptions));
