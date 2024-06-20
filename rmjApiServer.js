@@ -3207,6 +3207,47 @@ async function formatVehicleData(jsonData) {
 
   // const currentDateInfo = prepareCurrentDate();
   // Compiling all formatted data
+
+  const generateKeywords = (fields) => {
+    const keywords = new Set();
+
+    fields.forEach(field => {
+      const words = field.toLowerCase().split(' ');
+
+      // Generate substrings for each word
+      words.forEach((word) => {
+        for (let i = 1; i <= word.length; i++) {
+          keywords.add(word.substring(0, i));
+        }
+      });
+      const maxSubstringLength = 50;
+      // Generate all possible substrings within a reasonable length limit
+      for (let i = 0; i < field.length; i++) {
+        for (let j = i + 1; j <= field.length && j - i <= maxSubstringLength; j++) {
+          keywords.add(field.substring(i, j).toLowerCase());
+        }
+      }
+    });
+
+    return Array.from(keywords);
+  };
+
+  // Fields to generate keywords from
+  const fieldsToGenerateKeywordsFrom = [
+    `${jsonData.stock_id}`,
+    `${makerName}`,
+    `${modelName}`,
+    `${bodyTypeName}`,
+    `${regYear} ${makerName} ${modelName}`,
+    `${referenceNumber}`,
+    `${sales}`,
+    `${buyerName}`,
+    `${chassisNumber}`,
+    `${stockID}`
+  ];
+
+  const keywords = generateKeywords(fieldsToGenerateKeywordsFrom);
+
   const formattedData = {
     // ...jsonData, // Original data
     options_cds, // Transformed options
@@ -3249,21 +3290,8 @@ async function formatVehicleData(jsonData) {
     ...categorizedOptions,
     updatedDate: currentDateInfo.updatedDate, // Correctly include the updatedDate
     dateAdded: currentDateInfo.dateAdded, // And dateAdded
-    keywords: [
-      jsonData.stock_id,
-      makerName.toUpperCase(),
-      modelName.toUpperCase(),
-      bodyTypeName,
-      `${regYear} ${makerName.toUpperCase()} ${modelName.toUpperCase()}`,
-      `${regYear}`,
-      `${regYear} ${makerName.toUpperCase()}`,
-      `${makerName.toUpperCase()} ${modelName.toUpperCase()}`,
-      referenceNumber,
-      lastNumber,
-      buyerName,
-      chassisNumber,
-      stockID,
-    ]
+    keywords: keywords,
+
   };
 
   // Additional fields (e.g., chassisNumber, dimensions) are assumed to be direct mappings and do not require transformation.

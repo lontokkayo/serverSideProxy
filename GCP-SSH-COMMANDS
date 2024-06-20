@@ -21,6 +21,10 @@ sudo certbot certonly --webroot -w /var/www/html -d rmjsmtp.duckdns.org
 
 //Config to redirect port to safe https link
 sudo nano /etc/apache2/sites-enabled/rmjsmtp.duckdns.org.conf
+sudo nano /etc/apache2/sites-enabled/rmj-api.duckdns.org.conf
+
+//After Modifying
+sudo systemctl reload apache2
 
 -------------------------------------------------------------------------------------------------------------------
 --Git Pull Fix (Step by step)--
