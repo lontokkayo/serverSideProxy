@@ -3234,16 +3234,18 @@ async function formatVehicleData(jsonData) {
 
   // Fields to generate keywords from
   const fieldsToGenerateKeywordsFrom = [
-    `${jsonData.stock_id}`,
-    `${makerName}`,
-    `${modelName}`,
-    `${bodyTypeName}`,
-    `${regYear} ${makerName} ${modelName}`,
     `${referenceNumber}`,
+    `${regYear}`,
+    `${regYear} ${makerName} ${modelName}`,
+    `${stockID}`,
+    `${chassisNumber}`,
+    `${bodyTypeName}`,
+    `${modelCode}`,
+    `${fuel}`,
     `${sales}`,
     `${buyerName}`,
-    `${chassisNumber}`,
-    `${stockID}`
+    `${makerName}`,
+    `${modelName}`,
   ];
 
   const keywords = generateKeywords(fieldsToGenerateKeywordsFrom);
