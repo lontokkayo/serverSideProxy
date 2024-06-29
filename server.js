@@ -10,7 +10,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: 'https://lontokkayo.github.io', // Allow only this origin to make requests
+  origin: [
+    'https://lontokkayo.github.io', 
+    'https://control-rmj.web.app', 
+    // 'http://localhost:19006'
+  ], // Allow only this origin to make requests
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
