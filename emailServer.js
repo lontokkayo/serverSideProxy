@@ -9,7 +9,11 @@ const port = 2000;
 
 app.use(bodyParser.json());
 const corsOptions = {
-    origin: ['https://lontokkayo.github.io', 'http://localhost:19006', 'https://control-rmj.web.app/'], // Allow only this origin to make requests
+    origin: [
+        'https://lontokkayo.github.io',
+        'https://control-rmj.web.app',
+        // 'http://localhost:19006',
+    ], // Allow only this origin to make requests
     optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
